@@ -1,0 +1,32 @@
+### PCB Ops Example Template
+### Gitlab CI_CD 
+
+image:
+  name: akshmakov/pcb-cicd:latest
+
+
+stages:
+  - rules
+  - build
+  - release
+
+plot_gerbers:
+  stage: build
+  script:
+    - make ci_plot
+    - make ci_sch
+  when: always
+  only:
+    - master
+    - tags
+  artifacts:
+    paths:
+      - output/
+    expire_in: 1 day
+  tags:
+    - docker
+
+
+
+
+  
