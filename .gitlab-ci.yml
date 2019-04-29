@@ -9,24 +9,54 @@ stages:
   - rules
   - build
   - release
+  - post-release
 
-plot_gerbers:
+
+erc:
+  stage: build
+  script:
+    - make ci_erc
+  when: always
+  artifacts:
+    paths:
+      - output/
+
+
+  
+drc:
+  stage: build
+  script:
+    - make ci_drc
+  when: always
+  artifacts:
+    paths:
+      - output/
+
+
+project_outputs:
   stage: build
   script:
     - make ci_plot
     - make ci_sch
+    - make ci_drawings
+    - make ci_step
+    - make ci_bom
+    - make ci_pnp
   when: always
-  only:
-    - master
-    - tags
   artifacts:
     paths:
       - output/
-    expire_in: 1 day
-  tags:
-    - docker
 
 
+rfq:
+  stage: release
+  only:
+    - master
+    - release/*
+    - tags
+  script:
+    - make ci_rfq
+  artifacts:
+    paths:
+      - output/
 
-
-  
